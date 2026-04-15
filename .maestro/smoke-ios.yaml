@@ -1,0 +1,7 @@
+appId: com.anonymous.templaterepombsingle
+tags:
+    - ios
+---
+- launchApp:
+    clearState: true
+- assertVisible: "Template Repo Mobile Single"
