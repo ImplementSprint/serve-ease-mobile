@@ -7,7 +7,7 @@ Start here:
 - Onboarding guide: ONBOARDING.md
 - Reusable onboarding skill: .github/onboarding-skill/SKILL.md
 
-## Stack
+## Stacks
 
 - Expo SDK 55
 - React Native 0.83
