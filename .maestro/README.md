@@ -1,11 +1,11 @@
 # Maestro Starter Flows
 
-This template ships with platform-specific smoke flows:
+This project includes platform-specific smoke flows for CI:
 
 - smoke-android.yaml
 - smoke-ios.yaml
 
-Before first release, update appId values when you change package identifiers.
+Before release, keep appId values in sync with your bundle/package identifiers.
 
 Run flows:
 

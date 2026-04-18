@@ -1,0 +1,21 @@
+appId: com.servease.app
+---
+- launchApp
+- tapOn:
+    id: "checkbox"
+- tapOn: "Log In"
+- tapOn: "Email Address"
+- inputText: "test@example.com"
+- tapOn: "Password"
+- inputText: "password123"
+- tapOn: "Login"
+- assertVisible: "Explore Categories"
+# Navigate to the More tab where Manage Addresses lives
+- tapOn: "More"
+- tapOn: "Manage Addresses"
+- assertVisible: "Manage Addresses"
+- tapOn: "Add New Address"
+- assertVisible: "Add Address"
+- back
+- tapOn: "Edit"
+- assertVisible: "Edit Address"
