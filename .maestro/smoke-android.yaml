@@ -1,6 +1,7 @@
-appId : com.servease.mobile
+appId: com.android.settings
 tags:
   - smoke
   - android
 ---
-- launchApp
+- launchApp:
+    appId: com.servease.mobile
