@@ -3,5 +3,4 @@ tags:
   - smoke
   - android
 ---
-- launchApp:
-    clearState: true
+- launchApp
