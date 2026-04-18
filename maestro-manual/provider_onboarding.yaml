@@ -1,8 +1,10 @@
-appId: com.servease.app
+appId: com.servease.mobile
+tags:
+  - manual
 ---
 - launchApp
 - tapOn:
-      id: "checkbox"
+    id: "checkbox"
 - tapOn: "Sign up to ServEase"
 - tapOn: "Service Provider"
 - assertVisible: "Create Account"

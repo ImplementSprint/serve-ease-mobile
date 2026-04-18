@@ -1,4 +1,6 @@
-appId: com.servease.app
+appId: com.servease.mobile
+tags:
+  - manual
 ---
 - launchApp
 - tapOn:
