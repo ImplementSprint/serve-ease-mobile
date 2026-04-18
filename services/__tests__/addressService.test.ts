@@ -1,5 +1,10 @@
 import { api } from '@/lib/apiClient';
-import { addAddress, getUserAddresses } from '../addressService';
+import {
+  addAddress,
+  deleteAddress,
+  getUserAddresses,
+  updateAddress,
+} from '../addressService';
 
 jest.mock('@/lib/apiClient', () => ({
   api: {
@@ -12,6 +17,8 @@ jest.mock('@/lib/apiClient', () => ({
 
 const apiGetMock = api.get as jest.MockedFunction<typeof api.get>;
 const apiPostMock = api.post as jest.MockedFunction<typeof api.post>;
+const apiPatchMock = api.patch as jest.MockedFunction<typeof api.patch>;
+const apiDeleteMock = api.delete as jest.MockedFunction<typeof api.delete>;
 
 describe('addressService', () => {
   beforeEach(() => {
@@ -89,6 +96,83 @@ describe('addressService', () => {
       expect.objectContaining({
         id: 'address-2',
         address_id: 'address-2',
+      }),
+    );
+  });
+
+  it('normalizes payloads when updating an address', async () => {
+    apiPatchMock.mockResolvedValue({ status: 'ok' } as any);
+
+    await updateAddress('addr-1', {
+      label: ' Office ',
+      street: ' 742 Evergreen Terrace ',
+      city: ' Springfield ',
+      province: ' Illinois ',
+      zip_code: ' 62704 ',
+      latitude: 14.1234,
+      longitude: 121.5678,
+      is_default: true,
+    });
+
+    expect(apiPatchMock).toHaveBeenCalledWith(
+      '/addresses/addr-1',
+      expect.objectContaining({
+        label: 'Office',
+        street_address: '742 Evergreen Terrace',
+        street: '742 Evergreen Terrace',
+        city: 'Springfield',
+        province: 'Illinois',
+        zip_code: '62704',
+        postal_code: '62704',
+        latitude: 14.1234,
+        longitude: 121.5678,
+        is_default: true,
+      }),
+    );
+  });
+
+  it('calls delete endpoint for an address id', async () => {
+    apiDeleteMock.mockResolvedValue(undefined as any);
+
+    await deleteAddress('addr-2');
+
+    expect(apiDeleteMock).toHaveBeenCalledWith('/addresses/addr-2');
+  });
+
+  it('throws when street address is missing before save', async () => {
+    await expect(
+      addAddress({
+        label: 'Home',
+        city: 'Quezon City',
+        province: 'Metro Manila',
+      }),
+    ).rejects.toThrow('Please provide a valid street address before saving.');
+
+    expect(apiPostMock).not.toHaveBeenCalled();
+  });
+
+  it('accepts API responses that return rows in data[]', async () => {
+    apiGetMock.mockResolvedValue({
+      data: [
+        {
+          id: 'address-3',
+          label: 'Work',
+          street_address: 'Ayala Ave',
+          city: 'Makati',
+          province: 'Metro Manila',
+          zip_code: '1226',
+        },
+      ],
+    } as any);
+
+    const result = await getUserAddresses();
+
+    expect(result).toHaveLength(1);
+    expect(result[0]).toEqual(
+      expect.objectContaining({
+        id: 'address-3',
+        street: 'Ayala Ave',
+        zip_code: '1226',
       }),
     );
   });
