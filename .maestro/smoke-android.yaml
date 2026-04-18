@@ -1,7 +1,7 @@
-# CI validation marker: exercise Android Maestro lane after central workflow update v2.
-appId: com.anonymous.templaterepombsingle
+appId: com.android.settings
 tags:
-    - android
+  - smoke
+  - android
 ---
 - launchApp:
-    clearState: true
+    appId: com.servease.mobile

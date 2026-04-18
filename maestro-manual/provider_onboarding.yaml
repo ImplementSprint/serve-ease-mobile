@@ -1,0 +1,24 @@
+appId: com.servease.mobile
+tags:
+  - manual
+---
+- launchApp
+- tapOn:
+    id: "checkbox"
+- tapOn: "Sign up to ServEase"
+- tapOn: "Service Provider"
+- assertVisible: "Create Account"
+- tapOn: "Full Name"
+- inputText: "Test Provider"
+- tapOn: "Email Address"
+- inputText: "newprovider@example.com"
+- tapOn: "Contact Number"
+- inputText: "09123456789"
+- tapOn: "Date of Birth"
+- inputText: "01011990"
+- tapOn: "Password"
+- inputText: "Password123!"
+- tapOn: "Confirm Password"
+- inputText: "Password123!"
+- tapOn: "Continue"
+- assertVisible: "Service Profile"
