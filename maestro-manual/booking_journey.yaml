@@ -1,0 +1,16 @@
+appId: com.servease.mobile
+tags:
+  - manual
+---
+- launchApp
+- tapOn:
+    id: "checkbox"
+- tapOn: "Log In"
+- tapOn: "Email Address"
+- inputText: "customer@example.com"
+- tapOn: "Password"
+- inputText: "password123"
+- tapOn: "Login"
+- assertVisible: "Explore Categories"
+- tapOn: "Domestic & Cleaning Services"
+- assertVisible: "House Cleaning"

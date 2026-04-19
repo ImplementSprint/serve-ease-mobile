@@ -1,7 +1,54 @@
-node_modules
-.expo
-coverage
+# Dependencies
+node_modules/
+
+# Expo
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# Native build outputs
+.kotlin/
+/ios/
+/android/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
+
+# Logs
 *.log
-android
-ios
-coverage
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# OS
+.DS_Store
+Thumbs.db
+*.pem
+
+# Environment variables — never commit real secrets
+.env
+.env.local
+.env*.local
+
+# TypeScript
+*.tsbuildinfo
+
+# Tests
+coverage/
+test-results/
+
+# Expo example app
+app-example
+
+# AI assistant context — local only
+.agents/
+.claude/
+.gemini/
+CLAUDE.md

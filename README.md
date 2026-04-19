@@ -1,124 +1,136 @@
-# Expo TypeScript Boilerplate (Single Root)
+# ServEase Mobile (ServEase-MB)
 
-This repository is a reusable Expo + TypeScript boilerplate for the single-system mobile pipeline.
+Expo + React Native mobile app for ServEase customer and provider flows.  
+This app is API-driven and expects the ServEase backend gateway to be running.
 
-Start here:
+## Prerequisites
 
-- Onboarding guide: ONBOARDING.md
-- Reusable onboarding skill: .github/onboarding-skill/SKILL.md
+- Node.js 20+
+- npm 10+
+- Expo Go app or an Android/iOS emulator
+- `ServEase-BE` repository (backend)
+- Docker Desktop (for backend Kafka in local dev)
 
-## Stacks
+## 1. Start the backend first (ServEase-BE)
 
-- Expo SDK 55
-- React Native 0.83
-- TypeScript (strict mode)
-- React Navigation (native stack)
-- Jest (`tests/unit`)
-- Maestro (`.maestro`)
+From `ServEase-BE`:
 
-## Structure
-
-```text
-src/
-  app/
-  config/
-  features/
-  navigation/
-  theme/
-  utils/
-tests/
-  unit/
+```bash
+npm install
+copy .env.example .env
 ```
 
-## Commands
+Set required backend `.env` values (`SUPABASE_URL`, `SUPABASE_SECRET_KEY`, `JWT_SECRET`, etc.), then run:
 
-- `npm run start`: Start Expo dev server
-- `npm run android`: Build and run Android app
-- `npm run ios`: Build and run iOS app
-- `npm run ios:prebuild`: Regenerate iOS native code from Expo config
-- `npm run ios:build`: Run the local iOS build path used for simulator development
-- `npm run web`: Run web target
-- `npm run doctor`: Run Expo Doctor checks
-- `npm run verify`: Run lint, type-check, unit tests, and Expo Doctor
-- `npm run lint`: Lint all files
-- `npm run typecheck`: Type-check project
-- `npm run test`: Run unit tests with coverage
-- `npm run maestro:validate`: Ensure `.maestro` has at least one flow file
-- `npm run maestro:test`: Run all Maestro flows
-- `npm run maestro:test:android`: Run Android smoke flow
-- `npm run maestro:test:ios`: Run iOS smoke flow
-- `npm run android:prebuild`: Regenerate Android native code from Expo config
+```bash
+npm run dev
+```
 
-## Environment
+This starts Kafka plus gateway + microservices.  
+Gateway should be available at `http://localhost:5000`.
 
-Runtime config is resolved in `src/config/appConfig.ts`.
+## 2. Configure this mobile app environment
 
-Defaults:
+From `ServEase-MB`:
 
-- `environment`: `development`
-- `apiBaseUrl`: `https://api.example.com`
+```bash
+copy .env.example .env
+```
 
-Optional variables:
+Set:
 
-- `EXPO_PUBLIC_APP_NAME`
-- `EXPO_PUBLIC_APP_ENV`
-- `EXPO_PUBLIC_API_BASE_URL`
+- `EXPO_PUBLIC_API_URL`
+  - iOS simulator / web: `http://localhost:5000`
+  - Android emulator: `http://10.0.2.2:5000`
+  - Physical device: `http://<your-local-ip>:5000`
+- `EXPO_PUBLIC_API_TIMEOUT_MS` (optional, default is `15000`)
 
-An example file is provided at `.env.example`.
+## 3. Run the mobile app
 
-## Bootstrap Checklist
+```bash
+npm install
+npm run start
+```
 
-- Replace the placeholder Expo metadata in `app.config.ts` before your first release.
-- Set a unique `scheme`, Android package name, and iOS bundle identifier for each app cloned from this template.
-- Copy `.env.example` into your environment-specific secret management or local `.env` workflow.
+Then open on your target:
 
-## What Teams Can Touch
+- Press `a` for Android emulator
+- Press `i` for iOS simulator
+- Press `w` for web
+- Or scan QR with Expo Go
 
-- `src/**`
-- `tests/unit/**`
-- `.maestro/**` flow files
-- `app.config.ts`
-- environment value wiring via `src/config/appConfig.ts`
+If network discovery fails:
 
-## What Teams Should Not Touch Without Platform Review
+```bash
+npx expo start --tunnel
+```
 
-- `.github/workflows/**`
-- `scripts/validate-maestro-flows.ts`
+## Common scripts
 
-## CI
+```bash
+npm run android
+npm run ios
+npm run web
+npm run lint
+npm run typecheck
+npm run test
+npm run test:ci
+npm run test:watch
+npm run doctor
+npm run verify
+npm run maestro:validate
+npm run maestro:test
+npm run maestro:test:android
+npm run maestro:test:ios
+npm run test:e2e
+```
 
-The template keeps a workflow caller at `.github/workflows/mobile-pipeline-caller.yml` that delegates to the central orchestrator.
+## Pre-push checks (Windows)
 
-Required repository variable:
+```bash
+run-ci-checks.bat
+```
 
-- `MOBILE_SINGLE_SYSTEMS_JSON`
+Alternative:
 
-Recommended value:
+```bash
+scripts\validate-ci-readiness.bat
+```
+
+## Troubleshooting
+
+- **Request timed out / empty dashboard data:** make sure `ServEase-BE` is running (`npm run dev`) and all services are up.
+- **Android emulator cannot reach backend:** use `http://10.0.2.2:5000` for `EXPO_PUBLIC_API_URL`.
+- **Physical phone cannot reach backend:** use your machine LAN IP in `EXPO_PUBLIC_API_URL` and ensure both devices are on the same network.
+
+## CI/CD Template Alignment
+
+This repo now follows the same mobile CI caller template as `serve-ease-mobile`.
+
+- Workflow caller: `.github/workflows/mobile-pipeline-caller.yml`
+- Orchestrator workflow source: `ImplementSprint/central-workflow/.github/workflows/master-pipeline-mobile.yml@main`
+- Required repository variable: `MOBILE_SINGLE_SYSTEMS_JSON`
+
+Recommended `MOBILE_SINGLE_SYSTEMS_JSON` value:
 
 ```json
 {
-  "name": "mobile-expo",
+  "name": "servease-mb",
   "dir": ".",
   "mobile_stack": "expo",
   "enable_android_build": true,
   "enable_ios_build": true,
-  "version_stream": "mobile-expo"
+  "version_stream": "servease-mb"
 }
 ```
 
-CI build policy:
+Optional pre-flight checks:
 
-- The central mobile workflow builds Expo apps locally with `expo prebuild`, Gradle, xcodebuild, and Maestro.
-- `EXPO_TOKEN`, `EXPO_PROJECT_ID`, `EXPO_OWNER`, `eas.json`, and remote EAS credentials are not required for CI.
-- Stage 3 E2E expects `.maestro/` with at least one flow file.
-- The app must remain TypeScript-only with strict mode enabled.
+```bash
+# Windows quick checks
+run-ci-checks.bat
 
-## Dependency Update Policy
-
-- Keep Expo compatibility first.
-- Run `npx expo install --check` before and after upgrades.
-- Use `npm update` for compatible updates.
-- Validate with `npm run verify` plus Maestro smoke flow commands.
-
-
-this is for testing again
+# Cross-platform readiness checks
+scripts/validate-ci-readiness.sh
+scripts/validate-ci-readiness.bat
+```
